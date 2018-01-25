@@ -1,0 +1,86 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart', 'table']});
+        google.charts.setOnLoadCallback(initialize);
+
+        function initialize() {
+            var opts = {sendMethod: 'auto'};
+            // Replace the data source URL on next line with your data source URL.
+            var queryBlue = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20B%20&gid=1129217789', opts);
+            var queryGreen = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20C%20&gid=1129217789', opts);
+            var queryManager = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20D%20&gid=1129217789', opts);
+            var queryRed = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20E%20&gid=1129217789', opts);
+            var queryYellow = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20F%20&gid=1129217789', opts);
+            var reqCommentsBlue = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22BLUE%22%20';
+            var queryComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsBlue+'&gid=1881748874', opts);
+
+            // Optional request to return only column C and the sum of column B, grouped by C members.
+            //query.setQuery('select C, sum(B) group by C');
+
+            // Send the query with a callback function.
+            queryBlue.send(handleBlueQueryResponse);
+            queryGreen.send(handleGreenQueryResponse);
+            queryManager.send(handleManagerQueryResponse);
+            queryRed.send(handleRedQueryResponse);
+            queryYellow.send(handleYellowQueryResponse);
+            queryComment.send(handleCommentsQueryResponseData);
+        }
+
+        function handleBlueQueryResponse(response) {
+            handleQueryResponse(response, 'blue');
+        }
+        function handleGreenQueryResponse(response) {
+            handleQueryResponse(response, 'green');
+        }
+        function handleManagerQueryResponse(response) {
+            handleQueryResponse(response, 'manager');
+        }
+        function handleRedQueryResponse(response) {
+            handleQueryResponse(response, 'red');
+        }
+        function handleYellowQueryResponse(response) {
+            handleQueryResponse(response, 'yellow');
+        }
+        function handleQueryResponse(response, divId) {
+
+            if (response.isError()) {
+                alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+                return;
+            }
+
+            var data = response.getDataTable();
+            var chart = new google.visualization.LineChart(document.getElementById(divId));
+            chart.draw(data, {min: 1, max: 5, width: 500, height: 240, is3D: true});
+
+        }
+
+        function handleCommentsQueryResponseData(response) {
+
+            if (response.isError()) {
+                alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+                return;
+            }
+
+            var data = response.getDataTable();
+
+            // Create a view that shows everyone hired since 2007.
+            var view = new google.visualization.DataView(data);
+            var table = new google.visualization.Table(document.getElementById('comments'));
+            table.draw(view, {sortColumn: 1});
+
+        }
+    </script>
+</head>
+<body>
+<div id="blue" style="width: 900px;"></div>
+<div id="green" style="width: 900px;"></div>
+<div id="manager" style="width: 900px;"></div>
+<div id="red" style="width: 900px; "></div>
+<div id="yellow" style="width: 900px; "></div>
+<div id="comments" style="width: 900px; "></div>
+</body>
+</html>
+	  
+

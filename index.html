@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Weasy  - Weak Signals made easy !</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="css/fontastic.css">
+    <!-- Google fonts - Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <!-- jQuery Circle-->
+    <link rel="stylesheet" href="css/grasp_mobile_progress_circle-1.0.0.min.css">
+    <!-- Custom Scrollbar-->
+    <link rel="stylesheet" href="vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages': ['corechart', 'table']});
+      google.charts.setOnLoadCallback(initialize);
+
+      function initialize() {
+        var opts = {sendMethod: 'auto'};
+        // Replace the data source URL on next line with your data source URL.
+        var queryBlue = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20B%20&gid=1129217789', opts);
+        var queryGreen = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20C%20&gid=1129217789', opts);
+        var queryManager = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20D%20&gid=1129217789', opts);
+        var queryRed = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20E%20&gid=1129217789', opts);
+        var queryYellow = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20F%20&gid=1129217789', opts);
+
+        var reqCommentsBlue = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22BLUE%22%20';
+        var queryBlueComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsBlue+'&gid=1881748874', opts);
+
+        var reqCommentsGreen = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22GREEN%22%20';
+        var queryGreenComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsGreen+'&gid=1881748874', opts);
+
+        var reqCommentsRed = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22RED%22%20';
+        var queryRedComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsRed+'&gid=1881748874', opts);
+
+        // Optional request to return only column C and the sum of column B, grouped by C members.
+        //query.setQuery('select C, sum(B) group by C');
+
+        // Send the query with a callback function.
+        queryBlue.send(handleBlueQueryResponse);
+        queryGreen.send(handleGreenQueryResponse);
+        queryManager.send(handleManagerQueryResponse);
+        queryRed.send(handleRedQueryResponse);
+        queryYellow.send(handleYellowQueryResponse);
+        queryBlueComment.send(handleBlueCommentQueryResponse);
+        queryGreenComment.send(handleGreenCommentQueryResponse);
+        queryRedComment.send(handleRedCommentQueryResponse);
+      }
+
+      function handleBlueQueryResponse(response) {
+        handleQueryResponse(response, 'blue_mood');
+      }
+      function handleGreenQueryResponse(response) {
+        handleQueryResponse(response, 'green_mood');
+      }
+      function handleManagerQueryResponse(response) {
+        handleQueryResponse(response, 'manager');
+      }
+      function handleRedQueryResponse(response) {
+        handleQueryResponse(response, 'red_mood');
+      }
+      function handleYellowQueryResponse(response) {
+        handleQueryResponse(response, 'yellow');
+      }
+      function handleQueryResponse(response, divId) {
+
+        if (response.isError()) {
+          alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+          return;
+        }
+
+        var data = response.getDataTable();
+        var chart = new google.visualization.LineChart(document.getElementById(divId));
+        chart.draw(data, {min: 1, max: 5, width: 500, height: 240, is3D: true});
+
+      }
+
+      function handleBlueCommentQueryResponse(response) {
+        handleCommentsQueryResponseData(response, 'blue_comments');
+      }
+
+      function handleGreenCommentQueryResponse(response) {
+        handleCommentsQueryResponseData(response, 'green_comments');
+      }
+
+      function handleRedCommentQueryResponse(response) {
+        handleCommentsQueryResponseData(response, 'red_comments');
+      }
+
+      function handleCommentsQueryResponseData(response, divId) {
+
+        if (response.isError()) {
+          alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+          return;
+        }
+
+        var data = response.getDataTable();
+
+        // Create a view that shows everyone hired since 2007.
+        var view = new google.visualization.DataView(data);
+        var table = new google.visualization.Table(document.getElementById(divId));
+        table.draw(view, {sortColumn: 1});
+
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Side Navbar -->
+    <nav class="side-navbar">
+
+    </nav>
+    <div class="page">
+      <!-- navbar-->
+      <header class="header">
+        <nav class="navbar">
+          <div class="container-fluid">
+            <div class="navbar-holder d-flex align-items-center justify-content-between">
+              <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn"><i class="icon-bars"> </i></a><a href="index.html" class="navbar-brand">
+                  <div class="brand-text d-none d-md-inline-block"><span> Weasy </span><strong class="text-primary">  Weak Signals Dashboard</strong></div></a></div>
+              <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                <li class="nav-item dropdown"> <a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
+                  <ul aria-labelledby="notifications" class="dropdown-menu">
+                    <li><a rel="nofollow" href="#" class="dropdown-item"> 
+                        <div class="notification d-flex justify-content-between">
+                          <div class="notification-content"><i class="fa fa-envelope"></i>You have 6 new messages </div>
+                          <div class="notification-time"><small>4 minutes ago</small></div>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item"> 
+                        <div class="notification d-flex justify-content-between">
+                          <div class="notification-content"><i class="fa fa-twitter"></i>You have 2 followers</div>
+                          <div class="notification-time"><small>4 minutes ago</small></div>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item"> 
+                        <div class="notification d-flex justify-content-between">
+                          <div class="notification-content"><i class="fa fa-upload"></i>Server Rebooted</div>
+                          <div class="notification-time"><small>4 minutes ago</small></div>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item"> 
+                        <div class="notification d-flex justify-content-between">
+                          <div class="notification-content"><i class="fa fa-twitter"></i>You have 2 followers</div>
+                          <div class="notification-time"><small>10 minutes ago</small></div>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-bell"></i>view all notifications                                            </strong></a></li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope"></i><span class="badge badge-info">10</span></a>
+                  <ul aria-labelledby="notifications" class="dropdown-menu">
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-profile"> <img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
+                        <div class="msg-body">
+                          <h3 class="h5">Jason Doe</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-profile"> <img src="img/avatar-2.jpg" alt="..." class="img-fluid rounded-circle"></div>
+                        <div class="msg-body">
+                          <h3 class="h5">Frank Williams</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-profile"> <img src="img/avatar-3.jpg" alt="..." class="img-fluid rounded-circle"></div>
+                        <div class="msg-body">
+                          <h3 class="h5">Ashley Wood</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-envelope"></i>Read all messages    </strong></a></li>
+                  </ul>
+                </li>
+                <li class="nav-item"><a href="login.html" class="nav-link logout">Logout<i class="fa fa-sign-out"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <!-- Header Section-->
+      <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+          <div class="row d-flex align-items-md-stretch">
+            <!-- Line Chart -->
+            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+              <div class="card sales-report">
+                <h2 class="display h4">Blue team signals</h2>
+                <div id="blue_mood">
+                </div>
+              </div>
+            </div>
+            <!-- To Do List-->
+            <div class="col-lg-3 col-md-6">
+              <div class="card to-do">
+                <h2 class="display h4">Comments</h2>
+                <div id="blue_comments"></div>
+              </div>
+            </div>
+            <!-- Pie Chart-->
+            <div class="col-lg-3 col-md-6">
+              <h2 class="display h4">Impediments</h2>
+              <div class=""></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+          <div class="row d-flex align-items-md-stretch">
+            <!-- Line Chart -->
+            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+              <div class="card sales-report">
+                <h2 class="display h4">Green team signals</h2>
+                <div id="green_mood">
+                </div>
+              </div>
+            </div>
+            <!-- To Do List-->
+            <div class="col-lg-3 col-md-6">
+              <div class="card to-do">
+                <h2 class="display h4">Comments</h2>
+                <div id="green_comments"></div>
+              </div>
+            </div>
+            <!-- Pie Chart-->
+            <div class="col-lg-3 col-md-6">
+              <h2 class="display h4">Impediments</h2>
+              <div class=""></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+          <div class="row d-flex align-items-md-stretch">
+            <!-- Line Chart -->
+            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+              <div class="card sales-report">
+                <h2 class="display h4">Red team signals</h2>
+                <div id="red_mood">
+                </div>
+              </div>
+            </div>
+            <!-- To Do List-->
+            <div class="col-lg-3 col-md-6">
+              <div class="card to-do">
+                <h2 class="display h4">Comments</h2>
+                <div id="red_comments"></div>
+              </div>
+            </div>
+            <!-- Pie Chart-->
+            <div class="col-lg-3 col-md-6">
+              <h2 class="display h4">Impediments</h2>
+              <div class=""></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <!-- Updates Section -->
+      <footer class="main-footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <p>Your company &copy; 2017-2019</p>
+            </div>
+            <div class="col-sm-6 text-right">
+              <p>Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a></p>
+              <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Javascript files-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/grasp_mobile_progress_circle-1.0.0.min.js"></script>
+    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/charts-home.js"></script>
+    <!-- Main File-->
+    <script src="js/front.js"></script>
+  </body>
+</html>

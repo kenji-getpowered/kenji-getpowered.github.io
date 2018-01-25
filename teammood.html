@@ -1,0 +1,83 @@
+    <html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(function(){
+		drawChart('curve_chart');
+	  
+	  });
+
+	  // get on https://sheets.googleapis.com/v4/spreadsheets/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/values/data!A:d?key=AIzaSyB7WfZoOB6LQsnD1kwzPY7aSnWw_tpuylM
+	  	  
+	
+	  function httpGetAsync(theUrl, callback)
+		{
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() { 
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+					callback(xmlHttp.responseText);
+			}
+			xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+			xmlHttp.send(null);
+		}
+		
+		function httpGet(theUrl)
+		{
+				var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+			xmlHttp.send( null );
+			return xmlHttp.responseText;
+		}
+		
+		
+      function drawChart(elementId) {
+	  
+		// get on https://sheets.googleapis.com/v4/spreadsheets/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/values/data!A1:d5?key=AIzaSyB7WfZoOB6LQsnD1kwzPY7aSnWw_tpuylM
+		
+		        var dataOld = google.visualization.arrayToDataTable([
+          ['Year', 'Sales', 'Expenses'],
+          ['2004',  1000,      400],
+          ['2005',  null,      460],
+          ['2006',  660,       1120],
+          ['2007',  1030,      540]
+        ]);
+	  
+	    const dataRaw = httpGet('https://sheets.googleapis.com/v4/spreadsheets/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/values/data!A4:H?valueRenderOption=UNFORMATTED_VALUE&key=AIzaSyB7WfZoOB6LQsnD1kwzPY7aSnWw_tpuylM');
+		console.log(typeof(dataRaw));
+				
+		var json = JSON.parse(dataRaw, function (key, value) {   return (value == "") ? null : value});
+		var header =  ["Date",
+		{label: 'BLUE', type: 'number'},
+		{label: 'GREEN', type: 'number'},
+		{label: 'MANANGER', type: 'number'},
+		{label: 'RED', type: 'number'},
+		{label: 'YELLOW', type: 'number'},
+		{label: 'TOTAL', type: 'number'}
+		]
+		var values =  json.values;
+		values.unshift(header)
+		console.log(values);
+        var data = google.visualization.arrayToDataTable(values);
+		
+        var options = {
+          title: 'Beyond Team Mood',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById(elementId));
+
+        chart.draw(data, options);
+      }
+	  
+    </script>
+  </head>
+  <body>
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>	
+	<input id="button1" type="button" value="Hide Backlog" onclick="drawVisualization(2);" style="visibility: hidden;"></input> 
+	<input id="button2" type="button" value="Show Backlog" onclick="drawVisualization(null);" style="visibility: hidden;"></input> 
+  </body>
+</html>
+	  
+
