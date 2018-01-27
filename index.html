@@ -36,7 +36,7 @@
       function initialize() {
         var opts = {sendMethod: 'auto'};
         // Replace the data source URL on next line with your data source URL.
-        var queryBlue = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20B%20&gid=1129217789', opts);
+        var queryBlue = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20B%2C%20H&gid=1129217789', opts);
         var queryGreen = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20C%20&gid=1129217789', opts);
         var queryManager = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20D%20&gid=1129217789', opts);
         var queryRed = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20E%20&gid=1129217789', opts);
@@ -88,6 +88,7 @@
         }
 
         var data = response.getDataTable();
+        data.setColumnProperty(2, 'role', 'annotation');//     ({type: 'string', role: 'tooltip'});
         var chart = new google.visualization.LineChart(document.getElementById(divId));
         chart.draw(data, {min: 1, max: 5, width: 500, height: 240, is3D: true});
 
