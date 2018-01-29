@@ -33,30 +33,41 @@
       google.charts.load('current', {'packages': ['corechart', 'table']});
       google.charts.setOnLoadCallback(initialize);
 
+      /**
+       *
+      * @param columns an array of columns to be selected
+      */
+      function getQuery(... columns){
+            return encodeURIComponent('select '+ columns.join(","));
+      }
+
       function initialize() {
+
         var opts = {sendMethod: 'auto'};
-        // Replace the data source URL on next line with your data source URL.
-        var queryBlue = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20B%2C%20H&gid=1129217789', opts);
-        var queryGreen = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20C%20&gid=1129217789', opts);
-        var queryManager = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20D%20&gid=1129217789', opts);
-        var queryRed = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20E%20&gid=1129217789', opts);
-        var queryYellow = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=select%20A%2C%20F%20&gid=1129217789', opts);
+        
+        let document='https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=';
+        let gid='&gid=1129217789';
+        
+        var queryBlue = new google.visualization.Query(document+getQuery('A','B')+gid, opts);
+        var queryGreen = new google.visualization.Query(document+getQuery('A','C')+gid, opts);
+        var queryManager = new google.visualization.Query(document+getQuery('A','D')+gid, opts);
+        var queryRed = new google.visualization.Query(document+getQuery('A','E')+gid, opts);
+        var queryYellow = new google.visualization.Query(document+getQuery('A','F')+gid, opts);
 
-        var reqCommentsBlue = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22BLUE%22%20';
-        var queryBlueComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsBlue+'&gid=1881748874', opts);
-
-        var reqCommentsGreen = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22GREEN%22%20';
-        var queryGreenComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsGreen+'&gid=1881748874', opts);
-
-        var reqCommentsRed = 'select%20E%2C%20D%20%2C%20F%20WHERE%20D%20is%20not%20null%20AND%20F%20%3D%20%22RED%22%20';
-        var queryRedComment = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq='+reqCommentsRed+'&gid=1881748874', opts);
-
-        // Optional request to return only column C and the sum of column B, grouped by C members.
-        //query.setQuery('select C, sum(B) group by C');
+        
+        var reqCommentsBlue =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "BLUE"');
+        var reqCommentsGreen =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "GREEN"');
+        var reqCommentsRed =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "RED"');
+        var reqCommentsYellow =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "YELLOW"');
+        var reqCommentsManager =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "MANAGER"');
+        
+        var queryBlueComment = new google.visualization.Query(document+reqCommentsBlue+'&gid=1881748874', opts);
+        var queryGreenComment = new google.visualization.Query(document+reqCommentsGreen+'&gid=1881748874', opts);
+        var queryRedComment = new google.visualization.Query(document+reqCommentsRed+'&gid=1881748874', opts);
 
         // Send the query with a callback function.
-        queryBlue.send(handleBlueQueryResponse);
-        queryGreen.send(handleGreenQueryResponse);
+        queryBlue.send( new Function('response', 'handleQueryResponse(response, "blue_mood")'));
+        queryGreen.send(new Function('response', 'handleQueryResponse(response, "green_mood")'));
         queryManager.send(handleManagerQueryResponse);
         queryRed.send(handleRedQueryResponse);
         queryYellow.send(handleYellowQueryResponse);
@@ -64,6 +75,8 @@
         queryGreenComment.send(handleGreenCommentQueryResponse);
         queryRedComment.send(handleRedCommentQueryResponse);
       }
+      
+        
 
       function handleBlueQueryResponse(response) {
         handleQueryResponse(response, 'blue_mood');
@@ -81,17 +94,15 @@
         handleQueryResponse(response, 'yellow');
       }
       function handleQueryResponse(response, divId) {
-
         if (response.isError()) {
           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
           return;
         }
 
         var data = response.getDataTable();
-        data.setColumnProperty(2, 'role', 'annotation');//     ({type: 'string', role: 'tooltip'});
+       // data.setColumnProperty(2, 'role', 'annotation');//     ({type: 'string', role: 'tooltip'});
         var chart = new google.visualization.LineChart(document.getElementById(divId));
         chart.draw(data, {min: 1, max: 5, width: 500, height: 240, is3D: true});
-
       }
 
       function handleBlueCommentQueryResponse(response) {
@@ -107,20 +118,16 @@
       }
 
       function handleCommentsQueryResponseData(response, divId) {
-
         if (response.isError()) {
           alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
           return;
         }
-
         var data = response.getDataTable();
-
-        // Create a view that shows everyone hired since 2007.
         var view = new google.visualization.DataView(data);
         var table = new google.visualization.Table(document.getElementById(divId));
         table.draw(view, {sortColumn: 1});
-
       }
+      
     </script>
   </head>
   <body>
@@ -193,9 +200,9 @@
         <div class="container-fluid">
           <div class="row d-flex align-items-md-stretch">
             <!-- Line Chart -->
-            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+            <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
               <div class="card sales-report">
-                <h2 class="display h4">Blue team signals</h2>
+                <h3 class="display h3">Blue team signals</h3>
                 <div id="blue_mood">
                 </div>
               </div>
@@ -203,15 +210,11 @@
             <!-- To Do List-->
             <div class="col-lg-3 col-md-6">
               <div class="card to-do">
-                <h2 class="display h4">Comments</h2>
+                <h3 class="display h3">Comments</h3>
                 <div id="blue_comments"></div>
               </div>
             </div>
-            <!-- Pie Chart-->
-            <div class="col-lg-3 col-md-6">
-              <h2 class="display h4">Impediments</h2>
-              <div class=""></div>
-            </div>
+
 
           </div>
         </div>
@@ -221,9 +224,9 @@
         <div class="container-fluid">
           <div class="row d-flex align-items-md-stretch">
             <!-- Line Chart -->
-            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+            <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
               <div class="card sales-report">
-                <h2 class="display h4">Green team signals</h2>
+                <h3 class="display h3">Green team signals</h3>
                 <div id="green_mood">
                 </div>
               </div>
@@ -231,15 +234,11 @@
             <!-- To Do List-->
             <div class="col-lg-3 col-md-6">
               <div class="card to-do">
-                <h2 class="display h4">Comments</h2>
+                <h3 class="display h3">Comments</h3>
                 <div id="green_comments"></div>
               </div>
             </div>
-            <!-- Pie Chart-->
-            <div class="col-lg-3 col-md-6">
-              <h2 class="display h4">Impediments</h2>
-              <div class=""></div>
-            </div>
+   
 
           </div>
         </div>
@@ -249,9 +248,9 @@
         <div class="container-fluid">
           <div class="row d-flex align-items-md-stretch">
             <!-- Line Chart -->
-            <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+            <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
               <div class="card sales-report">
-                <h2 class="display h4">Red team signals</h2>
+                <h3 class="display h3">Red team signals</h3>
                 <div id="red_mood">
                 </div>
               </div>
@@ -259,15 +258,11 @@
             <!-- To Do List-->
             <div class="col-lg-3 col-md-6">
               <div class="card to-do">
-                <h2 class="display h4">Comments</h2>
+                <h3 class="display h3">Comments</h3>
                 <div id="red_comments"></div>
               </div>
             </div>
-            <!-- Pie Chart-->
-            <div class="col-lg-3 col-md-6">
-              <h2 class="display h4">Impediments</h2>
-              <div class=""></div>
-            </div>
+
 
           </div>
         </div>
