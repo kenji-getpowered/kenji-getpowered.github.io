@@ -54,30 +54,13 @@
       let document = 'https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=';
       let gid = '&gid=1129217789';
 
-      // var queryBlue = new google.visualization.Query(document + getQuery('A', 'B') + gid, opts);
-      //var queryGreen = new google.visualization.Query(document+getQuery('A','C')+gid, opts);
-      //var queryManager = new google.visualization.Query(document+getQuery('A','D')+gid, opts);
-      //var queryRed = new google.visualization.Query(document+getQuery('A','E')+gid, opts);
-      // var queryYellow = new google.visualization.Query(document+getQuery('A','F')+gid, opts);
-
-
-      // var reqCommentsBlue = encodeURIComponent('select E, D , F WHERE D is not null AND F = "BLUE"');
-      //  var reqCommentsGreen =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "GREEN"');
-      // var reqCommentsRed =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "RED"');
-      // var reqCommentsYellow =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "YELLOW"');
-      // var reqCommentsManager =  encodeURIComponent('select E, D , F WHERE D is not null AND F = "MANAGER"');
-
-      // var queryBlueComment = new google.visualization.Query(document + reqCommentsBlue + '&gid=1881748874', opts);
-      // var queryGreenComment = new google.visualization.Query(document+reqCommentsGreen+'&gid=1881748874', opts);
-      // var queryRedComment = new google.visualization.Query(document+reqCommentsRed+'&gid=1881748874', opts);
-
       // ------------------------------
 
       const createQueryResponseHandler = id => response => handleQueryResponse(response, id);
       const createQueryCommentsResponseHandler = id => response => handleCommentsQueryResponseData(response, id);
 
-      const initTeam = (name, a, b, id, idComments) => {
-        const query = new google.visualization.Query(document + getQuery(a, b) + gid, opts);
+      const initTeam = (name, id, idComments, ...columns) => {
+        const query = new google.visualization.Query(document + getQuery(columns) + gid, opts);
         query.send(createQueryResponseHandler(id));
 
         if (idComments) {
@@ -87,11 +70,11 @@
         }
       };
 
-      initTeam('BLUE', 'A', 'B', 'blue_mood', 'blue_comments');
-      initTeam('GREEN', 'A', 'C', 'green_mood', 'green_comments');
-      initTeam('RED', 'A', 'E', 'red_mood', 'red_comments');
-      initTeam('MANAGER', 'A', 'D', 'manager_mood', 'manager_comments');
-      initTeam('YELLOW', 'A', 'F', 'yellow_mood', 'yellow_comments');
+      initTeam('BLUE','blue_mood', 'blue_comments', 'A', 'B', 'H');
+      initTeam('GREEN', 'green_mood', 'green_comments','A', 'C');
+      initTeam('RED', 'red_mood', 'red_comments', 'A', 'E');
+      initTeam('MANAGER', 'manager_mood', 'manager_comments', 'A', 'D');
+      initTeam('YELLOW', 'yellow_mood', 'yellow_comments', 'A', 'F');
     }
 
     function handleQueryResponse(response, divId) {
@@ -101,12 +84,16 @@
       }
 
       var data = response.getDataTable();
-      // data.setColumnProperty(2, 'role', 'annotation');//     ({type: 'string', role: 'tooltip'});
+      if(data.ng.length > 2){
+        console.log(data.ng.length);
+        data.setColumnProperty(2, 'role', 'annotation');
+      }
+      //     ({type: 'string', role: 'tooltip'});
       var chart = new google.visualization.LineChart(document.getElementById(divId));
       chart.draw(data, {
         min: 1,
         max: 5,
-        width: 500,
+        width: 800,
         height: 240,
         is3D: true
       });
