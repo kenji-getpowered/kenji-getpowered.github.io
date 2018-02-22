@@ -64,17 +64,22 @@
         query.send(createQueryResponseHandler(id));
 
         if (idComments) {
-          const reqComments = encodeURIComponent(`select E, D ,F WHERE D is not null AND F = "${name}"`);
+          const reqComments = encodeURIComponent(`select E, D , F WHERE D is not null AND F = "${name}"`);
           const queryComment = new google.visualization.Query(document + reqComments + '&gid=1881748874', opts);
           queryComment.send(createQueryCommentsResponseHandler(idComments));
         }
       };
 
-      initTeam('BLUE','blue_mood', 'blue_comments', 'A', 'B', 'H');
-      initTeam('GREEN', 'green_mood', 'green_comments','A', 'C');
-      initTeam('RED', 'red_mood', 'red_comments', 'A', 'E');
-      initTeam('MANAGER', 'manager_mood', 'manager_comments', 'A', 'D');
-      initTeam('YELLOW', 'yellow_mood', 'yellow_comments', 'A', 'F');
+    const teams = [
+      { name:'BLUE', dateColumn : 'A', moodColumn : 'B'},
+      { name:'GREEN', dateColumn : 'A', moodColumn : 'C'},
+      { name:'RED', dateColumn : 'A', moodColumn : 'E'},
+      { name:'MANAGER', dateColumn : 'A', moodColumn : 'D'},
+      { name:'YELLOW', dateColumn : 'A', moodColumn : 'F'},
+    ]
+      for (team of teams) {
+        initTeam(team.name,team.name+'_mood', team.name+'_comments', team.dateColumn, team.moodColumn);
+      }
     }
 
     function handleQueryResponse(response, divId) {
@@ -85,7 +90,6 @@
 
       var data = response.getDataTable();
       if(data.ng.length > 2){
-        console.log(data.ng.length);
         data.setColumnProperty(2, 'role', 'annotation');
       }
       //     ({type: 'string', role: 'tooltip'});
@@ -138,75 +142,6 @@
                 <div class="brand-text d-none d-md-inline-block"><span> Weasy </span><strong class="text-primary">  Weak Signals Dashboard</strong></div>
               </a>
             </div>
-            <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-              <li class="nav-item dropdown"> <a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
-                <ul aria-labelledby="notifications" class="dropdown-menu">
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item">
-                      <div class="notification d-flex justify-content-between">
-                        <div class="notification-content"><i class="fa fa-envelope"></i>You have 6 new messages </div>
-                        <div class="notification-time"><small>4 minutes ago</small></div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item">
-                      <div class="notification d-flex justify-content-between">
-                        <div class="notification-content"><i class="fa fa-twitter"></i>You have 2 followers</div>
-                        <div class="notification-time"><small>4 minutes ago</small></div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item">
-                      <div class="notification d-flex justify-content-between">
-                        <div class="notification-content"><i class="fa fa-upload"></i>Server Rebooted</div>
-                        <div class="notification-time"><small>4 minutes ago</small></div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item">
-                      <div class="notification d-flex justify-content-between">
-                        <div class="notification-content"><i class="fa fa-twitter"></i>You have 2 followers</div>
-                        <div class="notification-time"><small>10 minutes ago</small></div>
-                      </div>
-                    </a>
-                  </li>
-                  <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-bell"></i>view all notifications                                            </strong></a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope"></i><span class="badge badge-info">10</span></a>
-                <ul aria-labelledby="notifications" class="dropdown-menu">
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item d-flex">
-                      <div class="msg-profile"> <img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                      <div class="msg-body">
-                        <h3 class="h5">Jason Doe</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item d-flex">
-                      <div class="msg-profile"> <img src="img/avatar-2.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                      <div class="msg-body">
-                        <h3 class="h5">Frank Williams</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a rel="nofollow" href="#" class="dropdown-item d-flex">
-                      <div class="msg-profile"> <img src="img/avatar-3.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                      <div class="msg-body">
-                        <h3 class="h5">Ashley Wood</h3><span>sent you a direct message</span><small>3 days ago at 7:58 pm - 10.06.2014</small>
-                      </div>
-                    </a>
-                  </li>
-                  <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-envelope"></i>Read all messages    </strong></a></li>
-                </ul>
-              </li>
-              <li class="nav-item"><a href="login.html" class="nav-link logout">Logout<i class="fa fa-sign-out"></i></a></li>
-            </ul>
           </div>
         </div>
       </nav>
@@ -219,7 +154,7 @@
           <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
             <div class="card sales-report">
               <h3 class="display h3">Blue team signals</h3>
-              <div id="blue_mood">
+              <div id="BLUE_mood">
               </div>
             </div>
           </div>
@@ -227,7 +162,7 @@
           <div class="col-lg-3 col-md-6">
             <div class="card to-do">
               <h3 class="display h3">Comments</h3>
-              <div id="blue_comments"></div>
+              <div id="BLUE_comments"></div>
             </div>
           </div>
 
@@ -243,7 +178,7 @@
           <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
             <div class="card sales-report">
               <h3 class="display h3">Green team signals</h3>
-              <div id="green_mood">
+              <div id="GREEN_mood">
               </div>
             </div>
           </div>
@@ -251,7 +186,7 @@
           <div class="col-lg-3 col-md-6">
             <div class="card to-do">
               <h3 class="display h3">Comments</h3>
-              <div id="green_comments"></div>
+              <div id="GREEN_comments"></div>
             </div>
           </div>
 
@@ -267,7 +202,7 @@
           <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
             <div class="card sales-report">
               <h3 class="display h3">Red team signals</h3>
-              <div id="red_mood">
+              <div id="RED_mood">
               </div>
             </div>
           </div>
@@ -275,7 +210,7 @@
           <div class="col-lg-3 col-md-6">
             <div class="card to-do">
               <h3 class="display h3">Comments</h3>
-              <div id="red_comments"></div>
+              <div id="RED_comments"></div>
             </div>
           </div>
         </div>
@@ -288,7 +223,7 @@
             <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
               <div class="card sales-report">
                 <h3 class="display h3">Yellow team signals</h3>
-                <div id="yellow_mood">
+                <div id="YELLOW_mood">
                 </div>
               </div>
             </div>
@@ -296,7 +231,7 @@
             <div class="col-lg-3 col-md-6">
               <div class="card to-do">
                 <h3 class="display h3">Comments</h3>
-                <div id="yellow_comments"></div>
+                <div id="YELLOW_comments"></div>
               </div>
             </div>
 
@@ -311,7 +246,7 @@
               <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
                 <div class="card sales-report">
                   <h3 class="display h3">Manager team signals</h3>
-                  <div id="manager_mood">
+                  <div id="MANAGER_mood">
                   </div>
                 </div>
               </div>
@@ -319,7 +254,7 @@
               <div class="col-lg-3 col-md-6">
                 <div class="card to-do">
                   <h3 class="display h3">Comments</h3>
-                  <div id="manager_comments"></div>
+                  <div id="MANAGER_comments"></div>
                 </div>
               </div>
 
@@ -342,19 +277,6 @@
     </footer>
   </div>
   <!-- Javascript files-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/popper.js/umd/popper.min.js">
-  </script>
-  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-  <script src="js/grasp_mobile_progress_circle-1.0.0.min.js"></script>
-  <script src="vendor/jquery.cookie/jquery.cookie.js">
-  </script>
-  <script src="vendor/chart.js/Chart.min.js"></script>
-  <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-  <script src="vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>
-  <script src="js/charts-home.js"></script>
-  <!-- Main File-->
-  <script src="js/front.js"></script>
 </body>
 
 </html>
