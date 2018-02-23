@@ -89,7 +89,7 @@ table {
   right: 0;
   -webkit-transition: width 0.3s linear;
   transition: width 0.3s linear;
-  width: calc(100% - 200px);
+  width: calc(100%px);
   background-color: #F4F7FA;
   min-height: 100vh;
   padding-bottom: 50px;
@@ -184,9 +184,7 @@ nav.navbar .side-navbar-wrapper {
   height: 100%;
 }
 
-nav.navbar .container-fluid {
-  width: 100%;
-}
+
 
 nav.navbar .navbar-holder {
   width: 100%;
@@ -551,7 +549,7 @@ nav.navbar a.menu-btn:hover {
 }
 
 /* SIDE NAVBAR MEDIAQUERIES ------------------------------ */
-@media (max-width: 1199px) {
+@media (max-width: 100%) {
   .page {
     width: 100%;
   }

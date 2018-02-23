@@ -28,98 +28,98 @@
   <link rel="shortcut icon" href="img/favicon.ico">
   <!-- Tweaks for older IEs-->
   <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['corechart', 'table']
+  google.charts.load('current', {
+    'packages': ['corechart', 'table']
+  });
+  google.charts.setOnLoadCallback(initialize);
+
+  /**
+  *
+  * @param columns an array of columns to be selected
+  */
+  function getQuery(...columns) {
+    return encodeURIComponent('select ' + columns.join(","));
+  }
+
+  function initialize() {
+
+    var opts = {
+      sendMethod: 'auto'
+    };
+
+    let document = 'https://docs.google.com/spreadsheets/d/1-73adNzB6YPvF4hEedzhlEWQ1Dqm1gnFSw0VoqUKw3U/gviz/tq?tq=';
+
+    let gid = '&gid=1605932708';
+
+    // ------------------------------
+
+    const createQueryResponseHandler = id => response => handleQueryResponse(response, id);
+    const createQueryCommentsResponseHandler = id => response => handleCommentsQueryResponseData(response, id);
+
+    const initTeam = (name, id, idComments, ...columns) => {
+      const query = new google.visualization.Query(document + getQuery(columns) + gid, opts);
+      query.send(createQueryResponseHandler(id));
+
+      if (idComments) {
+        const reqComments = encodeURIComponent(`select E, C ,F WHERE D is not null AND F = "${name}"`);
+        const queryComment = new google.visualization.Query(document + reqComments + '&gid=1881748874', opts);
+        queryComment.send(createQueryCommentsResponseHandler(idComments));
+      }
+    };
+
+    initTeam('BLUE','blue_mood', 'blue_comments', 'A', 'B');
+    initTeam('GREEN', 'green_mood', 'green_comments','A', 'C');
+    initTeam('RED', 'red_mood', 'red_comments', 'A', 'D');
+    initTeam('MANAGER', 'manager_mood', 'manager_comments', 'A', 'E');
+    initTeam('YELLOW', 'yellow_mood', 'yellow_comments', 'A', 'F');
+  }
+
+  function handleQueryResponse(response, divId) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
+    }
+
+    var data = response.getDataTable();
+    if(data.ng.length > 2){
+      console.log(data.ng.length);
+      data.setColumnProperty(2, 'role', 'annotation');
+    }
+    //     ({type: 'string', role: 'tooltip'});
+    var chart = new google.visualization.LineChart(document.getElementById(divId));
+    chart.draw(data, {
+      min: 1,
+      max: 5,
+      width: 800,
+      height: 240,
+      is3D: true
     });
-    google.charts.setOnLoadCallback(initialize);
+  }
 
-    /**
-     *
-     * @param columns an array of columns to be selected
-      */
-    function getQuery(...columns) {
-      return encodeURIComponent('select ' + columns.join(","));
+
+  function handleCommentsQueryResponseData(response, divId) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
     }
+    var data = response.getDataTable();
+    var view = new google.visualization.DataView(data);
+    var table = new google.visualization.Table(document.getElementById(divId));
+    table.draw(view, {
+      sortColumn: 1
+    });
+  }
 
-    function initialize() {
 
-      var opts = {
-        sendMethod: 'auto'
-      };
-
-      let document = 'https://docs.google.com/spreadsheets/d/1-73adNzB6YPvF4hEedzhlEWQ1Dqm1gnFSw0VoqUKw3U/gviz/tq?tq=';
-
-      let gid = '&gid=1605932708';
-
-      // ------------------------------
-
-      const createQueryResponseHandler = id => response => handleQueryResponse(response, id);
-      const createQueryCommentsResponseHandler = id => response => handleCommentsQueryResponseData(response, id);
-
-      const initTeam = (name, id, idComments, ...columns) => {
-        const query = new google.visualization.Query(document + getQuery(columns) + gid, opts);
-        query.send(createQueryResponseHandler(id));
-
-        if (idComments) {
-          const reqComments = encodeURIComponent(`select E, C ,F WHERE D is not null AND F = "${name}"`);
-          const queryComment = new google.visualization.Query(document + reqComments + '&gid=1881748874', opts);
-          queryComment.send(createQueryCommentsResponseHandler(idComments));
-        }
-      };
-
-      initTeam('BLUE','blue_mood', 'blue_comments', 'A', 'B');
-      initTeam('GREEN', 'green_mood', 'green_comments','A', 'C');
-      initTeam('RED', 'red_mood', 'red_comments', 'A', 'D');
-      initTeam('MANAGER', 'manager_mood', 'manager_comments', 'A', 'E');
-        initTeam('YELLOW', 'yellow_mood', 'yellow_comments', 'A', 'F');
-      }
-
-    function handleQueryResponse(response, divId) {
-      if (response.isError()) {
-        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
-
-      var data = response.getDataTable();
-      if(data.ng.length > 2){
-        console.log(data.ng.length);
-        data.setColumnProperty(2, 'role', 'annotation');
-      }
-      //     ({type: 'string', role: 'tooltip'});
-      var chart = new google.visualization.LineChart(document.getElementById(divId));
-      chart.draw(data, {
-        min: 1,
-        max: 5,
-        width: 800,
-        height: 240,
-        is3D: true
-      });
+  function createQueryResponseHandler(id) {
+    return function(response) {
+      handleQueryResponse(response, id);
     }
-
-
-    function handleCommentsQueryResponseData(response, divId) {
-      if (response.isError()) {
-        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
-      var data = response.getDataTable();
-      var view = new google.visualization.DataView(data);
-      var table = new google.visualization.Table(document.getElementById(divId));
-      table.draw(view, {
-        sortColumn: 1
-      });
-    }
-
-
-    function createQueryResponseHandler(id) {
-      return function(response) {
-        handleQueryResponse(response, id);
-      }
-    }
+  }
   </script>
 </head>
 
@@ -192,7 +192,7 @@
       </div>
     </section>
 
-  <section class="dashboard-header section-padding">
+    <section class="dashboard-header section-padding">
       <div class="container-fluid">
         <div class="row d-flex align-items-md-stretch">
           <!-- Line Chart -->
@@ -214,50 +214,50 @@
       </div>
     </section>
     <section class="dashboard-header section-padding">
-        <div class="container-fluid">
-          <div class="row d-flex align-items-md-stretch">
-            <!-- Line Chart -->
-            <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
-              <div class="card sales-report">
-                <h3 class="display h3">Equipe 4 Champagne</h3>
-                <div id="yellow_mood">
-                </div>
+      <div class="container-fluid">
+        <div class="row d-flex align-items-md-stretch">
+          <!-- Line Chart -->
+          <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+            <div class="card sales-report">
+              <h3 class="display h3">Equipe 4 Champagne</h3>
+              <div id="yellow_mood">
               </div>
             </div>
-            <!-- To Do List-->
-            <div class="col-lg-3 col-md-6">
-              <div class="card to-do">
-                <h3 class="display h3">Comments</h3>
-                <div id="yellow_comments"></div>
-              </div>
-            </div>
-
-
           </div>
+          <!-- To Do List-->
+          <div class="col-lg-3 col-md-6">
+            <div class="card to-do">
+              <h3 class="display h3">Comments</h3>
+              <div id="yellow_comments"></div>
+            </div>
+          </div>
+
+
         </div>
-      </section>
-      <section class="dashboard-header section-padding">
-          <div class="container-fluid">
-            <div class="row d-flex align-items-md-stretch">
-              <!-- Line Chart -->
-              <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
-                <div class="card sales-report">
-                  <h3 class="display h3">Equipe 5 DSN</h3>
-                  <div id="manager_mood">
-                  </div>
-                </div>
+      </div>
+    </section>
+    <section class="dashboard-header section-padding">
+      <div class="container-fluid">
+        <div class="row d-flex align-items-md-stretch">
+          <!-- Line Chart -->
+          <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+            <div class="card sales-report">
+              <h3 class="display h3">Equipe 5 DSN</h3>
+              <div id="manager_mood">
               </div>
-              <!-- To Do List-->
-              <div class="col-lg-3 col-md-6">
-                <div class="card to-do">
-                  <h3 class="display h3">Comments</h3>
-                  <div id="manager_comments"></div>
-                </div>
-              </div>
-
             </div>
           </div>
-        </section>
+          <!-- To Do List-->
+          <div class="col-lg-3 col-md-6">
+            <div class="card to-do">
+              <h3 class="display h3">Comments</h3>
+              <div id="manager_comments"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
     <!-- Updates Section -->
     <footer class="main-footer">
       <div class="container-fluid">

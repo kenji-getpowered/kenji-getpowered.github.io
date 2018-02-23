@@ -89,7 +89,7 @@ table {
   right: 0;
   -webkit-transition: width 0.3s linear;
   transition: width 0.3s linear;
-  width: calc(100% - 200px);
+  width: calc(100%);
   background-color: #F4F7FA;
   min-height: 100vh;
   padding-bottom: 50px;
@@ -160,7 +160,7 @@ section header {
   padding-bottom: 2rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 100%) {
   .container-fluid {
     padding: 0 3rem;
   }
