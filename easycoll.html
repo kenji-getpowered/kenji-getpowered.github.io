@@ -44,11 +44,12 @@
   */
 
   var teams = [
-    { name:'BLUE', dateColumn : 'A', moodColumn : 'B'},
-    { name:'GREEN', dateColumn : 'A', moodColumn : 'C'},
-    { name:'RED', dateColumn : 'A', moodColumn : 'E'},
-    { name:'MANAGER', dateColumn : 'A', moodColumn : 'D'},
-    { name:'YELLOW', dateColumn : 'A', moodColumn : 'F'},
+    { name:'Equipe 1 Strass', dateColumn : 'A', moodColumn : 'B'},
+    { name:'Equipe 2 Paillettes', dateColumn : 'A', moodColumn : 'C'},
+    { name:'Equipe 3 Cotillons', dateColumn : 'A', moodColumn : 'D'},
+    { name:'Equipe 4 Champagne', dateColumn : 'A', moodColumn : 'E'},
+    { name:'Equipe 5 DSN', dateColumn : 'A', moodColumn : 'F'},
+    { name:'PO', dateColumn : 'A', moodColumn : 'G'},
   ]
 
   /**
@@ -64,9 +65,9 @@
       sendMethod: 'auto'
     };
 
-    const document = 'https://docs.google.com/spreadsheets/d/1KCWLYyU49Tmf2zsnl302bfmM608GQ3hnbZAbliObnWc/gviz/tq?tq=';
-    const gid = '&gid=1129217789';
-    const commentsSheet = '&gid=1881748874'
+    const document = 'https://docs.google.com/spreadsheets/d/1-73adNzB6YPvF4hEedzhlEWQ1Dqm1gnFSw0VoqUKw3U/gviz/tq?tq=';
+    const gid = '&gid=1605932708';
+    const commentsSheet = '&gid=2142381352'
 
     const createQueryResponseHandler = id => response => handleQueryResponse(response, id);
     const createQueryCommentsResponseHandler = id => response => handleCommentsQueryResponseData(response, id);
@@ -75,7 +76,7 @@
       const query = new google.visualization.Query(document + getQuery(columns) + gid, opts);
       query.send(createQueryResponseHandler(id));
       if (idComments) {
-        const reqComments = encodeURIComponent(`select E, D , F WHERE D is not null AND F = "${name}"`);
+        const reqComments = encodeURIComponent(`select E, D , C WHERE C is not null AND D = "${name}"`);
         const queryComment = new google.visualization.Query(document + reqComments + commentsSheet, opts);
         queryComment.send(createQueryCommentsResponseHandler(idComments));
       }
@@ -122,7 +123,7 @@
     }
     var data = response.getDataTable();
     var view = new google.visualization.DataView(data);
-    view.setColumns([0,2]);//
+    view.setColumns([0,2]);
     var table = new google.visualization.Table(document.getElementById(divId));
     table.draw(view, {
       sortColumn: 1
@@ -159,7 +160,6 @@
 </body>
 <script>
   function generateDiv(team){
-    document.getElementById('content').innerHTML += '<section class="dashboard-header section-padding">  <div class="container-fluid"> <div class="row d-flex align-items-md-stretch">   <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">     <div class="card sales-report">       <h3 class="display h3">'+team+' team signals</h3>       <div id="'+team+'_mood">       </div>     </div>   </div>   <div class="col-lg-3 col-md-6">     <div class="card to-do">       <h3 class="display h3">Comments</h3>       <div id="'+team+'_comments"></div>     </div>   </div>     </div>   </div></section>'
     document.getElementById('content').innerHTML += '<section class="dashboard-header section-padding">  <div class="container-fluid"> <div class="row d-flex align-items-md-stretch">   <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">     <div class="card sales-report">       <h3 class="display h3">'+team+' team signals</h3>       <div id="'+team+'_mood">       </div>     </div>   </div>   <div class="col-lg-3 col-md-6">     <div class="card to-do">       <h3 class="display h3">Comments</h3>       <div id="'+team+'_comments"></div>     </div>   </div>     </div>   </div></section>'
   }
   for (team of teams) {
