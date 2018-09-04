@@ -157,10 +157,43 @@
 </body>
 <script>
   function generateDiv(team){
-    document.getElementById('content').innerHTML += '<section class="dashboard-header section-padding">  <div class="container-fluid"> <div class="row d-flex align-items-md-stretch">   <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">     <div class="card sales-report">       <h3 class="display h3">'+team+' team signals</h3>       <div id="'+team+'_mood">       </div>     </div>   </div>   <div class="col-lg-3 col-md-6">     <div class="card to-do">       <h3 class="display h3">Comments</h3>       <div id="'+team+'_comments"></div>     </div>   </div>     </div>   </div></section>'
+    document.getElementById('content').innerHTML += 
+             '<section class="dashboard-header section-padding"> \
+               <div class="container-fluid"> \
+                  <div class="row d-flex align-items-md-stretch">   \
+                     <div class="col-lg-9 col-md-12 flex-lg-last flex-md-first align-self-baseline">\
+                        <div class="card sales-report">   \
+                           <h3 class="display h3">'+team+' team signals</h3> \
+                           <div id="'+team+'_mood">       </div> \
+                        </div>\
+                     </div> \
+                     <div class="col-lg-3 col-md-6"> \
+                        <div class="card to-do">\
+                           <button class="collapsible"> Comments</button> \
+                           <div   class="content" id="'+team+'_comments"></div>\
+                        </div>\
+                     </div> \
+                  </div> \
+               </div> \
+            </section>'
   }
   for (team of teams) {
     generateDiv(team.name);
   }
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
 </script>
 </html>
